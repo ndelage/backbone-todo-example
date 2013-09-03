@@ -36,20 +36,24 @@ AllDone.TodoListView = Backbone.View.extend({
   className: "todo-list",
 
   initialize: function(options) {
-    _.bindAll(this, "render");
+    _.bindAll(this, "render", "addTodo");
     this.template = _.template($('#todo-list-template').html());
 
-    this.collection.on('add', this.render);
+    this.collection.on('add', this.addTodo);
     this.collection.on('change', this.render);
     this.render();
+  },
+
+  addTodo: function(model) {
+    var todoView = new AllDone.TodoView({model: model});
+    this.$el.find("ul").append(todoView.$el);
   },
 
   render: function() {
     this.$el.html(this.template());
 
     this.collection.models.forEach(function(model){
-      var todoView = new AllDone.TodoView({model: model});
-      this.$el.find("ul").append(todoView.$el);
+      this.addTodo(model);
     }, this);
   }
 });
